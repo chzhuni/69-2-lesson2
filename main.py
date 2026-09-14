@@ -1,70 +1,36 @@
 import asyncio 
 import logging
-from datetime import datetime
-import random
+from config import dp, bot, Admin
+from handlers import commands, echo, fsm_add_product, fsm_add_film
+from aiogram.types import BotCommand
 
-from aiogram import Bot, Dispatcher, F, Router 
-from aiogram.filters import Command 
-from aiogram.types import Message 
-from decouple import config
-
-
-TOKEN = config("BOT_TOKEN")
-bot = Bot(token=TOKEN) 
-dp = Dispatcher() 
-router = Router()
-
-@router.message(Command("start")) 
-async def start_handler(message: Message):
-     await message.answer("Привет! Я личный бот Николь.")
-
-@router.message(Command("help"))
-async def help_handler(message: Message): 
-    await message.answer(
-         "Доступные команды:\n"
-          "/start — начать\n" 
-          "/help — список команд\n" 
-          "/time — текущая дата\n "
-          "/random — выдает рандомное число\n"
-          "/joke — рассказывает шутку "
-        )
-
-@router.message(F.text == 'Привет')
-async def hello_text_handler(message: Message):
-    await message.answer('Привет!!')
-
-@router.message(Command('time'))
-async def time_handler(message: Message):
-    now = datetime.now()
-    form = now.strftime('%d.%m.%Y %H:%M')
-    await message.answer(f'Сейчас: {form}')
-
-@router.message(Command('random'))
-async def random_handler(message: Message):
-    number = random.randint(1, 100)
-    await message.answer(f'Рандомное число: {number}')
-
-jokes = [
-    ' — Почему компьютер пошёл к врачу? — Потому что у него был вирус.',
-    ' — Что сказал ноль восьмёрке? — «Классный ремень!»',
-    ' Я решил начать новую жизнь с понедельника. Понедельник посмотрел на меня и тоже решил не торопиться.',
-    '— Ты почему опоздал в школу? — Я вышел вовремя, но дорога была против.',
-    ' Купил умные часы. Теперь они каждый день напоминают мне, что я ничего не делаю. Кажется, умнее в этой покупке оказались часы.',
+async def set_commands():
+    commands = [
+        BotCommand(command='start', description='Старт бота'),
+        BotCommand(command='help', description='helper'),
+        BotCommand(command='time', description='текущая дата'),
+        BotCommand(command='random', description='рандомное число'),
+        BotCommand(command='joke', description='рассказывает шутку'),
+        BotCommand(command='add_product', description='добавляет товар'),
+        BotCommand(command='add_film', description='добавляет фильм'),
     ]
+    await bot.set_my_commands(commands)
 
-@router.message(Command('joke'))
-async def joke_handler(message: Message):
-    joke = random.choice(jokes)
-    await message.answer(joke)
-
-@router.message(F.text)
-async def echo_handler(message: Message): 
-    await message.answer(f"Такой команды нет: {message.text}")
+async def on_startup():
+    await set_commands()
+    for admin_id in Admin:
+        await bot.send_message(chat_id=admin_id, text='Бот включен!')
 
 
-async def main(): 
-    dp.include_router(router) 
+async def main():
+    dp.include_router(router=commands.router_commands)
+    dp.include_router(router=fsm_add_product.router_addproduct)
+    dp.include_router(router=fsm_add_film.router_addfilm)
+    dp.include_router(router=echo.router_echo)
+    dp.startup.register(on_startup)
     await dp.start_polling(bot)
+
+
 
 if __name__ == "__main__": 
     logging.basicConfig(level=logging.INFO) 
