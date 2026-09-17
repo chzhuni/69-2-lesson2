@@ -3,12 +3,18 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from database.db import add_product_db
 
 class AddProduct(StatesGroup):
     name = State()
     price = State()
     description = State()
 
+router_addproduct= Router()
+@router_addproduct.message(Command('cancel'))
+async def cancel_handler_fsm(message: Message, state: FSMContext):
+    await state.clear()
+    await message.answer("Анкета отменена.")
 router_addproduct = Router()
 @router_addproduct.message(Command('add_product'))
 async def add_start_fsm(message: Message, state: FSMContext):
@@ -32,4 +38,5 @@ async def add_descriptions(message: Message, state: FSMContext):
     data = await state.update_data(description=message.text)
 
     await message.answer(f"Данные товара:\nНазвание — {data['name']}\nЦена — {data['price']}\nОписание —  {data['description']}\n") 
+    add_product_db(name=data['name'], price=data['price'], description=data['description'])
     await state.clear()

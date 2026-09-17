@@ -4,6 +4,7 @@ from aiogram.types import Message
 from config import bot
 import random
 from datetime import datetime
+from database.db import get_all_products_db
 
 router_commands = Router()
 
@@ -47,6 +48,15 @@ jokes = [
     ' Купил умные часы. Теперь они каждый день напоминают мне, что я ничего не делаю. Кажется, умнее в этой покупке оказались часы.',
     ]
 
+
+@router_commands.message(Command('all_products'))
+async def all_products_handler(message: Message):
+    products=get_all_products_db()
+    result = ""
+    for product in products:
+        result = result + f'{product[1]}, {product[2]} сом, {product[3]}\n'
+    await message.answer(result)
+ 
 @router_commands.message(Command('joke'))
 async def joke_handler(message: Message):
     joke = random.choice(jokes)

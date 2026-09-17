@@ -3,6 +3,7 @@ import logging
 from config import dp, bot, Admin
 from handlers import commands, echo, fsm_add_product, fsm_add_film
 from aiogram.types import BotCommand
+from database import db
 
 async def set_commands():
     commands = [
@@ -13,6 +14,7 @@ async def set_commands():
         BotCommand(command='joke', description='рассказывает шутку'),
         BotCommand(command='add_product', description='добавляет товар'),
         BotCommand(command='add_film', description='добавляет фильм'),
+        BotCommand(command='cancel', description='отменяет заполнение анкеты'),
     ]
     await bot.set_my_commands(commands)
 
@@ -33,5 +35,6 @@ async def main():
 
 
 if __name__ == "__main__": 
+    db.init_db()
     logging.basicConfig(level=logging.INFO) 
     asyncio.run(main())
