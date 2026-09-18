@@ -51,7 +51,7 @@ jokes = [
 
 @router_commands.message(Command('all_products'))
 async def all_products_handler(message: Message):
-    products=get_all_products_db()
+    products= await get_all_products_db()
     result = ""
     for product in products:
         result = result + f'{product[1]}, {product[2]} сом, {product[3]}\n'

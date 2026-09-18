@@ -19,6 +19,7 @@ async def set_commands():
     await bot.set_my_commands(commands)
 
 async def on_startup():
+    await db.init_db()
     await set_commands()
     for admin_id in Admin:
         await bot.send_message(chat_id=admin_id, text='Бот включен!')
@@ -35,6 +36,5 @@ async def main():
 
 
 if __name__ == "__main__": 
-    db.init_db()
     logging.basicConfig(level=logging.INFO) 
     asyncio.run(main())
