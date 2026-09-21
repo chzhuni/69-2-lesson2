@@ -12,7 +12,6 @@ class AddProduct(StatesGroup):
     product_id = State()
     category = State()
     
-
 router_addproduct= Router()
 @router_addproduct.message(Command('cancel'))
 async def cancel_handler_fsm(message: Message, state: FSMContext):

@@ -1,3 +1,4 @@
+#  ADD_FILM_TABLE
 create_films_table= """
     CREATE TABLE IF NOT EXISTS films (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,16 +16,7 @@ create_film_detail_table = """
 insert_film = 'INSERT INTO films(title, film_id) VALUES(?, ?)'
 insert_film_detail = 'INSERT INTO film_detail(genre, rating, film_id) VALUES(?, ?, ?)'
 
-
-
-
-
-
-
-
-
-
-
+# ADD_PRODUCT_TABLE
 
 create_products_table = """ 
 CREATE TABLE IF NOT EXISTS products (

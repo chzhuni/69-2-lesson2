@@ -1,7 +1,5 @@
 import aiosqlite
 path_db = 'database/bot.db'
-
-
 from database.queries import (
     create_products_table, 
     create_products_detail_table, 
@@ -13,7 +11,6 @@ from database.queries import (
     insert_film, 
     insert_film_detail
 ) 
-
 
 async def init_db():
     async with aiosqlite.connect(path_db) as conn:
@@ -32,7 +29,7 @@ async def add_film_db(title, film_id, genre, rating):
 
 async def add_product_db(name, price, description, product_id, category):
     async with aiosqlite.connect(path_db) as conn:
-        await conn.execute(insert_product, (name, price))
+        await conn.execute(insert_product, (name, price, product_id))
         await conn.execute(insert_product_detail, (description, product_id, category))
         await conn.commit()
 

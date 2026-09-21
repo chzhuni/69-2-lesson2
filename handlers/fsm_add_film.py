@@ -48,16 +48,7 @@ async def add_film_id(message: Message, state: FSMContext):
     if not message.text.isdigit(): 
         await message.answer("Артикул должен быть числом!") 
         return
-
     data = await state.update_data(film_id=message.text)
-
-    await add_film_db(
-        title=data['title'],
-        film_id=data['film_id'],
-        genre=data['genre'],
-        rating=data['rating']
-    )
-
     await message.answer(
         f"Данные фильма:\n"
         f"Название — {data['title']}\n"
@@ -65,8 +56,10 @@ async def add_film_id(message: Message, state: FSMContext):
         f"Рейтинг — {data['rating']}\n"
         f"Артикул — {data['film_id']}"
     )
+    await add_film_db(
+        title=data['title'],
+        film_id=data['film_id'],
+        genre=data['genre'],
+        rating=data['rating']
+    )
     await state.clear()
-
-
-    # await message.answer(f"Данные фильма:\nНазвание — {data['title']}\nЖанр — {data['genre']}\nРейтинг — {data['rating']}")
-    # await state.clear()
